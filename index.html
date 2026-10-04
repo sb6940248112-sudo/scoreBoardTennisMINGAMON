@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tennis Score Board</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+      
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            background-image:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.35),
+                    rgba(0, 0, 0, 0.35)
+                ),
+                url("Tennisbg1.png");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+    
+
+        .scoreboard {
+            width: 700px;
+            max-width: 90%;
+
+            background: rgb(254, 249, 156);
+
+            padding: 35px;
+
+            border-radius: 25px;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+
+            text-align: center;
+        }
+
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+
+        .players {
+            display: flex;
+            gap: 25px;
+        }
+
+
+        .player {
+            flex: 1;
+
+            padding: 25px;
+
+            background: #fff7c5;
+
+            border: 2px solid #fae0b2;
+
+            border-radius: 35px;
+        }
+
+
+        .player h2 {
+            color: #555;
+        }
+
+
+        .score {
+            font-size: 60px;
+            font-weight: bold;
+
+            margin: 20px 0;
+
+            color: #5b5bd6;
+        }
+
+
+        
+
+        button {
+            border: none;
+
+            padding: 12px 18px;
+
+            margin: 5px;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+
+        .add {
+            background: #a3f396;
+            color: #16452d;
+        }
+
+
+        .minus {
+            background: #ffb3b3;
+            color: #6b2020;
+        }
+
+
+        .reset {
+            background: #d6d6d6;
+            color: #333;
+        }
+
+
+      
+
+        .popup {
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0, 0, 0, 0.55);
+
+            justify-content: center;
+            align-items: center;
+
+            z-index: 999;
+        }
+
+
+        .popup-box {
+            background: white;
+
+            width: 380px;
+            max-width: 85%;
+
+            padding: 35px;
+
+            border-radius: 25px;
+
+            text-align: center;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+
+        .popup-box h2 {
+            font-size: 30px;
+            color: #5b5bd6;
+        }
+
+
+        .popup-box button {
+            background: #8fa8ff;
+            color: white;
+
+            padding: 12px 30px;
+        }
+
+
+        .trophy {
+            font-size: 70px;
+        }
+
+
+
+        .play-again {
+            background: #8fa8ff;
+            color: white;
+
+            padding: 14px 30px;
+
+            font-size: 17px;
+        }
+
+
+       
+
+        @media (max-width: 600px) {
+
+            .players {
+                flex-direction: column;
+            }
+
+            .scoreboard {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+   
+
+    <div class="scoreboard">
+
+        <h1>🎾 Tennis Score Board</h1>
+
+
+        <div class="players">
+
+
+            <!-- TEAM A -->
+
+            <div class="player">
+
+                <h2>Team A</h2>
+
+                <div class="score" id="show">
+                    0
+                </div>
+
+
+                <button class="add" onclick="addA()">
+                    + Add
+                </button>
+
+
+                <button class="minus" onclick="minusA()">
+                    − Minus
+                </button>
+
+
+                <br>
+
+
+                <button class="reset" onclick="resetA()">
+                    Reset A
+                </button>
+
+            </div>
+
+
+
+            <!-- TEAM B -->
+
+            <div class="player">
+
+                <h2>Team B</h2>
+
+                <div class="score" id="show1">
+                    0
+                </div>
+
+
+                <button class="add" onclick="addB()">
+                    + Add
+                </button>
+
+
+                <button class="minus" onclick="minusB()">
+                    − Minus
+                </button>
+
+
+                <br>
+
+
+                <button class="reset" onclick="resetB()">
+                    Reset B
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+=
+    <!-- POPUP ADV / DEUCE-->
+
+    <div id="alertPopup" class="popup">
+
+        <div class="popup-box">
+
+            <div id="alertIcon">
+                🎾
+            </div>
+
+            <h2 id="alertText"></h2>
+
+            <button onclick="closePopup()">
+                ตกลง
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- POPUP WINNER -->
+
+    <div id="winnerPopup" class="popup">
+
+        <div class="popup-box">
+
+            <div class="trophy">
+                🏆
+            </div>
+
+            <h2 id="winnerText">
+                Team A Wins!
+            </h2>
+
+            <p>
+                Congratulations!
+            </p>
+
+
+            <button class="play-again" onclick="playAgain()">
+                🎾 Play Again
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+       
+        
+
+        let x = 0;
+        let y = 0;
+
+        let winner = "";
+
+
+
+        
+
+        function show() {
+
+            let score;
+
+            if (x == 0) {
+                score = "0";
+            }
+
+            else if (x == 1) {
+                score = "15";
+            }
+
+            else if (x == 2) {
+                score = "30";
+            }
+
+            else if (x == 3) {
+                score = "40";
+            }
+
+            else {
+
+                if (x == y) {
+                    score = "40";
+                }
+
+                else if (x == y + 1) {
+                    score = "Adv";
+                }
+
+                else {
+                    score = "40";
+                }
+            }
+
+            document.getElementById("show").innerHTML = score;
+        }
+
+
+
+        
+
+        function show1() {
+
+            let score;
+
+            if (y == 0) {
+                score = "0";
+            }
+
+            else if (y == 1) {
+                score = "15";
+            }
+
+            else if (y == 2) {
+                score = "30";
+            }
+
+            else if (y == 3) {
+                score = "40";
+            }
+
+            else {
+
+                if (x == y) {
+                    score = "40";
+                }
+
+                else if (y == x + 1) {
+                    score = "Adv";
+                }
+
+                else {
+                    score = "40";
+                }
+            }
+
+            document.getElementById("show1").innerHTML = score;
+        }
+
+
+
+        
+
+        function checkStatus() {
+
+
+            // Deuce
+
+            if (x >= 3 && y >= 3 && x == y) {
+
+                document.getElementById("alertIcon").innerHTML = "⚖️";
+
+                document.getElementById("alertText").innerHTML =
+                    "Deuce!";
+
+
+                document.getElementById("alertPopup").style.display = "flex";
+            }
+
+
+            // Team A Adv
+
+            else if (x >= 4 && x == y + 1) {
+
+                document.getElementById("alertIcon").innerHTML = "   🔥 🔥 🔥";
+
+                document.getElementById("alertText").innerHTML =
+                    "Team A ได้เปรียบ!";
+
+
+                document.getElementById("alertPopup").style.display = "flex";
+            }
+
+
+            // Team B Adv
+
+            else if (y >= 4 && y == x + 1) {
+
+                document.getElementById("alertIcon").innerHTML = "   🔥 🔥 🔥 ";
+
+                document.getElementById("alertText").innerHTML =
+                    "Team B ได้เปรียบ!";
+
+
+                document.getElementById("alertPopup").style.display = "flex";
+            }
+
+        }
+
+
+
+     
+
+        function checkWinner() {
+
+
+            // Team A ชนะ
+
+            if (x >= 4 && x >= y + 2) {
+
+                winner = "Team A";
+
+                document.getElementById("winnerText").innerHTML =
+                    "Team A Wins!";
+
+
+                document.getElementById("winnerPopup").style.display =
+                    "flex";
+            }
+
+
+            // Team B ชนะ
+
+            else if (y >= 4 && y >= x + 2) {
+
+                winner = "Team B";
+
+                document.getElementById("winnerText").innerHTML =
+                    "Team B Wins!";
+
+
+                document.getElementById("winnerPopup").style.display =
+                    "flex";
+            }
+
+        }
+
+
+
+        
+
+        function addA() {
+
+            if (winner != "") {
+                return;
+            }
+
+            x++;
+
+            show();
+            show1();
+
+            checkStatus();
+            checkWinner();
+        }
+
+
+
+      
+       
+
+        function addB() {
+
+            if (winner != "") {
+                return;
+            }
+
+            y++;
+
+            show();
+            show1();
+
+            checkStatus();
+            checkWinner();
+        }
+
+
+
+   
+
+        function minusA() {
+
+            if (winner != "") {
+                return;
+            }
+
+            if (x > 0) {
+                x--;
+            }
+
+            show();
+            show1();
+
+        }
+
+
+
+        
+
+        function minusB() {
+
+            if (winner != "") {
+                return;
+            }
+
+            if (y > 0) {
+                y--;
+            }
+
+            show();
+            show1();
+
+        }
+
+
+
+       
+
+        function resetA() {
+
+            x = 0;
+
+            winner = "";
+
+            document.getElementById("winnerPopup").style.display =
+                "none";
+
+            document.getElementById("alertPopup").style.display =
+                "none";
+
+            show();
+            show1();
+        }
+
+
+
+        
+
+        function resetB() {
+
+            y = 0;
+
+            winner = "";
+
+            document.getElementById("winnerPopup").style.display =
+                "none";
+
+            document.getElementById("alertPopup").style.display =
+                "none";
+
+            show();
+            show1();
+        }
+
+
+
+        function playAgain() {
+
+            x = 0;
+            y = 0;
+
+            winner = "";
+
+            document.getElementById("winnerPopup").style.display =
+                "none";
+
+            document.getElementById("alertPopup").style.display =
+                "none";
+
+            show();
+            show1();
+        }
+
+
+
+        function closePopup() {
+
+            document.getElementById("alertPopup").style.display =
+                "none";
+        }
+
+
+
+
+        show();
+        show1();
+
+    </script>
+
+</body>
+
+</html>
